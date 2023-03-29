@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>5e Spellbook Companion</title>
+    <link rel="stylesheet" href="./css/bootstrap.css" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- main starts -->
+    <main class="d-flex align-items-start justify-content-left p-3 gap-3">
+      <!-- find spells card start -->
+      <div class="card col-lg-2">
+        <div class="card-header fs-3 text-center">Find Spells</div>
+        <div class="card-body">
+          <label class="mb-2" for="filters">Filters</label>
+          <select
+            name="class-filter"
+            id="class-filter"
+            class="form-select mb-2 select-width"
+            onchange="getClassFilter(this)"
+          >
+            <option selected>Class</option>
+            <option value="Bard">Bard</option>
+            <option value="Cleric">Cleric</option>
+            <option value="Druid">Druid</option>
+            <option value="Paladin">Paladin</option>
+            <option value="Sorcerer">Sorcerer</option>
+            <option value="Warlock">Warlock</option>
+            <option value="Wizard">Wizard</option>
+          </select>
+          <select
+            name="level-filter"
+            id="level-filter"
+            class="form-select mb-5 select-width"
+            onchange="getLevelFilter(this)"
+          >
+            <option selected>
+              Spell Level
+            </option>
+            <option value="0">Cantrip</option>
+            <option value="1">1st-Level</option>
+            <option value="2">2nd-Level</option>
+            <option value="3">3rd-Level</option>
+            <option value="4">4th-Level</option>
+            <option value="5">5th-Level</option>
+            <option value="6">6th-Level</option>
+            <option value="7">7th-Level</option>
+            <option value="8">8th-Level</option>
+            <option value="9">9th-Level</option>
+          </select>
+          <label class="mb-2" for="filters">Filtered Spells</label>
+          <select name="spell-list" id="spell-list" class="form-select mb-5" onclick="requestAPI()">
+            <option selected>Spell List</option>
+          </select>
+          <!-- search input start -->
+          <div class="input-group mb-2">
+            <input
+              class="form-control"
+              type="text"
+              name="spell-search"
+              id="spell-search"
+              placeholder="Search spells"
+            />
+          </div>
+        </div>
+      </div>
+      <!-- spellbook start -->
+      <div class="card col-lg-9">
+        <div class="card-header fs-3 text-center">Spellbook</div>
+        <div class="card-body d-flex justify-content-center gap-3">
+          <!-- spell card start -->
+          <div class="card col-lg-6">
+            <div class="card-header d-flex justify-content-between fs-6">
+              <a href="#" class="text-danger">Acid Arrow</a>
+              <span>2nd-level Evocation | Druid, Wizard</span>
+            </div>
+            <div class="card-body">
+              <p><scan class="fw-bold">Range:</scan> 90 feet</p>
+              <p><scan class="fw-bold">Casting Time:</scan> 1 action</p>
+              <p><scan class="fw-bold">Duration:</scan> Instantaneous</p>
+              <p class="fw-bold">
+                Components: V, S, M (Powdered rhubarb leaf and an adder's
+                stomach)
+              </p>
+              <p>
+                A shimmering green arrow streaks toward a target within range
+                and bursts in a spray of acid. Make a ranged spell attack
+                against the target. On a hit, the target takes 4d4 acid damage
+                immediately and 2d4 acid damage at the end of its next turn. On
+                a miss, the arrow splashes the target with acid for half as much
+                of the initial damage and no damage at the end of its next turn.
+              </p>
+              <p>
+                <scan class="fw-bold">At higher levels:</scan> When you cast
+                this spell using a spell slot of 3rd level or higher, the damage
+                (both initial and later) increases by 1d4 for each slot level
+                above 2nd.
+              </p>
+            </div>
+          </div>
+          <div class="card col-lg-6">
+            <div class="card-header d-flex justify-content-between fs-6">
+              <a href="#" class="text-danger">Acid Arrow</a>
+              <span>2nd-level Evocation | Druid, Wizard</span>
+            </div>
+            <div class="card-body">
+              <p><scan class="fw-bold">Range:</scan> 90 feet</p>
+              <p><scan class="fw-bold">Casting Time:</scan> 1 action</p>
+              <p><scan class="fw-bold">Duration:</scan> Instantaneous</p>
+              <p class="fw-bold">
+                Components: V, S, M (Powdered rhubarb leaf and an adder's
+                stomach)
+              </p>
+              <p>
+                A shimmering green arrow streaks toward a target within range
+                and bursts in a spray of acid. Make a ranged spell attack
+                against the target. On a hit, the target takes 4d4 acid damage
+                immediately and 2d4 acid damage at the end of its next turn. On
+                a miss, the arrow splashes the target with acid for half as much
+                of the initial damage and no damage at the end of its next turn.
+              </p>
+              <p>
+                <scan class="fw-bold">At higher levels:</scan> When you cast
+                this spell using a spell slot of 3rd level or higher, the damage
+                (both initial and later) increases by 1d4 for each slot level
+                above 2nd.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script src="./js/bootstrap.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
