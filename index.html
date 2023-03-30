@@ -22,7 +22,7 @@
             id="class-filter"
             class="form-select mb-2 select-width"
             onfocus="this.oldValue = this.value;"
-            onchange="onClassFilterChange(this); this.oldValue = this.value; getClassFilter(this); resetList('#spell-list')"
+            onchange="onClassFilterChange(this); this.oldValue = this.value; getClassFilter(this); resetFilteredList('#spell-list')"
           >
             <option selected value="default">Class</option>
             <option value="Bard">Bard</option>
@@ -39,11 +39,9 @@
             id="level-filter"
             class="form-select mb-5 select-width"
             onfocus="this.oldValue = this.value;"
-            onchange="onLevelFilterChange(this); this.oldValue = this.value; getLevelFilter(this); resetList('#spell-list')"
+            onchange="onLevelFilterChange(this); this.oldValue = this.value; getLevelFilter(this); resetFilteredList()"
           >
-            <option selected value="default">
-              Spell Level
-            </option>
+            <option selected value="default">Spell Level</option>
             <option value="0">Cantrip</option>
             <option value="1">1st-Level</option>
             <option value="2">2nd-Level</option>
@@ -57,8 +55,14 @@
           </select>
           <!-- filtered spells start -->
           <label class="mb-2" for="filters">Filtered Spells</label>
-          <select name="spell-list" id="spell-list" class="form-select mb-5" onclick="requestAPI(checkFilterChange());">
-            <option selected>Spell List</option>
+          <select
+            name="spell-list"
+            id="spell-list"
+            class="form-select mb-5"
+            onclick="requestAPI(checkFilterChange());"
+            onchange="addCardToSpellbook(this)"
+          >
+            <option selected value="default">Spell List</option>
           </select>
           <!-- search input start -->
           <div class="input-group mb-2">
@@ -75,7 +79,10 @@
       <!-- spellbook start -->
       <div class="card col-lg-9">
         <div class="card-header fs-3 text-center">Spellbook</div>
-        <div class="card-body d-flex justify-content-center gap-3">
+        <div
+          id="spellbook"
+          class="card-body d-flex justify-content-center gap-3"
+        >
           <!-- spell card start -->
           <div class="card col-lg-6">
             <div class="card-header d-flex justify-content-between fs-6">

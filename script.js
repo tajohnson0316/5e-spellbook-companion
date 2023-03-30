@@ -11,7 +11,10 @@ let previousClassFilter = classFilter;
 let levelFilter = document.querySelector("#level-filter").value;
 let previousLevelFilter = levelFilter;
 let filteredSpellList = document.querySelector("#spell-list");
-let defaultSpellList = filteredSpellList;
+let defaultSpellList = filteredSpellList.innerHTML;
+let matches = [];
+
+let spellbook = document.querySelector("#spellbook");
 
 function getClassFilter(element) {
   classFilter = element.value;
@@ -40,15 +43,29 @@ function checkFilterChange() {
   );
 }
 
-function resetList(elementID) {
-  document.querySelector(elementID).innerHTML = defaultSpellList;
+function resetFilteredList() {
+  filteredSpellList.innerHTML = defaultSpellList;
+}
+
+function addCardToSpellbook(spellListElement) {
+  let spellName = spellListElement.value;
+  if (spellName != "default") {
+    console.log(spellName);
+    let match = matches.find((match) => match.name == spellName);
+    console.log(match);
+  }
+
+  // if (match != "undefined") {
+
+  //   spellbook.innerHTML +=
+  // }
 }
 
 async function populateFilter(data) {
   let hasClassFilter = !(classFilter == "default");
   let hasLevelFilter = !(levelFilter == "default");
 
-  for (var a = 0; a < data.count; a += data.results.length) {
+  for (var a = data.results.length; a <= data.count; a += data.results.length) {
     // check that a filter is active
     if (hasClassFilter || hasLevelFilter) {
       // loop through this page of results
@@ -62,17 +79,21 @@ async function populateFilter(data) {
               classFilter == resultClassesArray[j] &&
               (!hasLevelFilter || levelFilter == result.level_int)
             ) {
-              filteredSpellList.innerHTML += `<option value="${result.name}">${result.name}</option>\n`;
+              matches.push(result);
+              filteredSpellList.innerHTML += `<br><option value="${result.name}">${result.name}</option>`;
             }
           }
         } else {
           if (levelFilter == result.level_int) {
-            filteredSpellList.innerHTML += `<option value="${result.name}">${result.name}</option>\n`;
+            matches.push(result);
+            filteredSpellList.innerHTML += `<br><option value="${result.name}">${result.name}</option>`;
           }
         }
       }
     }
-    data = await fetch(data.next).then((response) => response.json());
+    if (a != data.count) {
+      data = await fetch(data.next).then((response) => response.json());
+    }
   }
 }
 
@@ -80,6 +101,7 @@ async function populateFilter(data) {
 async function requestAPI(filtersChanged) {
   // data-intensive; do not run unless the filters have been altered
   if (filtersChanged) {
+    matches = [];
     resetPreviousFilterValues();
     const data = await fetch("https://api.open5e.com/spells/").then(
       (response) => response.json()
