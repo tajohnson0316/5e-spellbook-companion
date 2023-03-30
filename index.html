@@ -16,13 +16,15 @@
         <div class="card-header fs-3 text-center">Find Spells</div>
         <div class="card-body">
           <label class="mb-2" for="filters">Filters</label>
+          <!-- class filter start -->
           <select
             name="class-filter"
             id="class-filter"
             class="form-select mb-2 select-width"
-            onchange="getClassFilter(this)"
+            onfocus="this.oldValue = this.value;"
+            onchange="onClassFilterChange(this); this.oldValue = this.value; getClassFilter(this); resetList('#spell-list')"
           >
-            <option selected>Class</option>
+            <option selected value="default">Class</option>
             <option value="Bard">Bard</option>
             <option value="Cleric">Cleric</option>
             <option value="Druid">Druid</option>
@@ -31,13 +33,15 @@
             <option value="Warlock">Warlock</option>
             <option value="Wizard">Wizard</option>
           </select>
+          <!-- level filter start -->
           <select
             name="level-filter"
             id="level-filter"
             class="form-select mb-5 select-width"
-            onchange="getLevelFilter(this)"
+            onfocus="this.oldValue = this.value;"
+            onchange="onLevelFilterChange(this); this.oldValue = this.value; getLevelFilter(this); resetList('#spell-list')"
           >
-            <option selected>
+            <option selected value="default">
               Spell Level
             </option>
             <option value="0">Cantrip</option>
@@ -51,8 +55,9 @@
             <option value="8">8th-Level</option>
             <option value="9">9th-Level</option>
           </select>
+          <!-- filtered spells start -->
           <label class="mb-2" for="filters">Filtered Spells</label>
-          <select name="spell-list" id="spell-list" class="form-select mb-5" onclick="requestAPI()">
+          <select name="spell-list" id="spell-list" class="form-select mb-5" onclick="requestAPI(checkFilterChange());">
             <option selected>Spell List</option>
           </select>
           <!-- search input start -->
