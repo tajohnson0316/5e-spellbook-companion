@@ -15,6 +15,7 @@ let defaultSpellList = filteredSpellList.innerHTML;
 let matches = [];
 
 let spellbook = document.querySelector("#spellbook");
+let spells = [];
 
 function getClassFilter(element) {
   classFilter = element.value;
@@ -49,16 +50,70 @@ function resetFilteredList() {
 
 function addCardToSpellbook(spellListElement) {
   let spellName = spellListElement.value;
+
+  // don't try to add the "Spell List" option
   if (spellName != "default") {
-    console.log(spellName);
     let match = matches.find((match) => match.name == spellName);
-    console.log(match);
+    spells.push(spellName);
+
+    let ritual = "";
+    if (match.ritual == "yes") {
+      ritual = " (Ritual)";
+    }
+
+    let concentration = "";
+    if (match.concentration == "yes") {
+      concentration = " (Concentration)";
+    }
+
+    let material = "";
+    if (match.material.length > 0) {
+      material = ` (${match.material})`;
+    }
+
+    let higherLevel = "";
+    if (match.higher_level.length > 0) {
+      higherLevel = `<p>
+                <scan class="fw-bold">At higher levels:</scan> ${match.higher_level}
+              </p>`;
+    }
+
+    spellbook.innerHTML += `
+      <div class="card">
+        <div class="card-header d-flex justify-content-between fs-6">
+          <a
+            href="https://open5e.com/spells/${match.slug}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-danger"
+            >${match.name}</a
+          >
+          <span>${match.level} ${match.school} | ${match.dnd_class}</span>
+        </div>
+        <div class="card-body">
+          <p><scan class="fw-bold">Range:</scan> ${match.range}</p>
+          <p>
+            <scan class="fw-bold">Casting Time:</scan> ${
+              match.casting_time + ritual
+            }
+          </p>
+          <p>
+            <scan class="fw-bold">Duration:</scan> ${
+              match.duration + concentration
+            }
+          </p>
+          <p class="fw-bold">
+            Components: ${match.components} ${material}
+          </p>
+          <p>${match.desc}</p>
+          ${higherLevel}
+        </div>
+      </div>
+      `;
+
+    var matchIndex = matches.indexOf(match);
+    document.querySelector("#option-index-" + matchIndex).remove();
   }
-
-  // if (match != "undefined") {
-
-  //   spellbook.innerHTML +=
-  // }
 }
 
 async function populateFilter(data) {
@@ -71,6 +126,11 @@ async function populateFilter(data) {
       // loop through this page of results
       for (let i = 0; i < data.results.length; i++) {
         let result = data.results[i];
+
+        if (spells.includes(result.name)) {
+          continue;
+        }
+
         let resultClassesArray = result.dnd_class.split(", ");
 
         if (hasClassFilter) {
@@ -80,13 +140,15 @@ async function populateFilter(data) {
               (!hasLevelFilter || levelFilter == result.level_int)
             ) {
               matches.push(result);
-              filteredSpellList.innerHTML += `<br><option value="${result.name}">${result.name}</option>`;
+              let newMatchIndex = matches.length - 1;
+              filteredSpellList.innerHTML += `<option id="option-index-${newMatchIndex}" value="${result.name}">${result.name}</option>`;
             }
           }
         } else {
           if (levelFilter == result.level_int) {
             matches.push(result);
-            filteredSpellList.innerHTML += `<br><option value="${result.name}">${result.name}</option>`;
+            let newMatchIndex = matches.length - 1;
+            filteredSpellList.innerHTML += `<option id="option-index-${newMatchIndex}" value="${result.name}">${result.name}</option>`;
           }
         }
       }
