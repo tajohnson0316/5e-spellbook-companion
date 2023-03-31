@@ -59,7 +59,7 @@
             name="spell-list"
             id="spell-list"
             class="form-select mb-5"
-            onclick="requestAPI(checkFilterChange());"
+            onclick="populateFilter();"
             onchange="addCardToSpellbook(this)"
           >
             <option selected value="default">Spell List</option>
@@ -71,7 +71,7 @@
               type="text"
               name="spell-search"
               id="spell-search"
-              placeholder="Search spells"
+              placeholder="Where did I put that scroll...?"
             />
           </div>
         </div>

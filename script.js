@@ -5,17 +5,19 @@ POPULATE FILTERED SPELL LIST
 3. parse through API according to filter options
 4. populate Filtered Spells drop-down with matching options
  */
+const completeSpellList = [];
+collectAllSpellsFromAPI();
 
 let classFilter = document.querySelector("#class-filter").value;
-let previousClassFilter = classFilter;
+let previousClassFilter = "";
+
 let levelFilter = document.querySelector("#level-filter").value;
-let previousLevelFilter = levelFilter;
+let previousLevelFilter = "";
+
 let filteredSpellList = document.querySelector("#spell-list");
-let defaultSpellList = filteredSpellList.innerHTML;
-let matches = [];
 
 let spellbook = document.querySelector("#spellbook");
-let spells = [];
+let collectedSpells = [];
 
 function getClassFilter(element) {
   classFilter = element.value;
@@ -44,37 +46,34 @@ function checkFilterChange() {
   );
 }
 
-function resetFilteredList() {
-  filteredSpellList.innerHTML = defaultSpellList;
-}
-
-function addCardToSpellbook(spellListElement) {
-  let spellName = spellListElement.value;
+function addCardToSpellbook(spellbookElement) {
+  let spellName = spellbookElement.value;
 
   // don't try to add the "Spell List" option
   if (spellName != "default") {
-    let match = matches.find((match) => match.name == spellName);
-    spells.push(spellName);
+    let newSpell = completeSpellList.find((spell) => spell.name == spellName);
+    let newSpellIndex = completeSpellList.indexOf(newSpell);
+    collectedSpells.push(spellName);
 
     let ritual = "";
-    if (match.ritual == "yes") {
+    if (newSpell.ritual == "yes") {
       ritual = " (Ritual)";
     }
 
     let concentration = "";
-    if (match.concentration == "yes") {
+    if (newSpell.concentration == "yes") {
       concentration = " (Concentration)";
     }
 
     let material = "";
-    if (match.material.length > 0) {
-      material = ` (${match.material})`;
+    if (newSpell.material.length > 0) {
+      material = ` (${newSpell.material})`;
     }
 
     let higherLevel = "";
-    if (match.higher_level.length > 0) {
+    if (newSpell.higher_level.length > 0) {
       higherLevel = `<p>
-                <scan class="fw-bold">At higher levels:</scan> ${match.higher_level}
+                <scan class="fw-bold">At higher levels:</scan> ${newSpell.higher_level}
               </p>`;
     }
 
@@ -82,92 +81,92 @@ function addCardToSpellbook(spellListElement) {
       <div class="card">
         <div class="card-header d-flex justify-content-between fs-6">
           <a
-            href="https://open5e.com/spells/${match.slug}"
+            href="https://open5e.com/spells/${newSpell.slug}"
             target="_blank"
             rel="noopener noreferrer"
             class="text-danger"
-            >${match.name}</a
+            >${newSpell.name}</a
           >
-          <span>${match.level} ${match.school} | ${match.dnd_class}</span>
+          <span>${newSpell.level} ${newSpell.school} | ${newSpell.dnd_class}</span>
         </div>
         <div class="card-body">
-          <p><scan class="fw-bold">Range:</scan> ${match.range}</p>
+          <p><scan class="fw-bold">Range:</scan> ${newSpell.range}</p>
           <p>
             <scan class="fw-bold">Casting Time:</scan> ${
-              match.casting_time + ritual
+              newSpell.casting_time + ritual
             }
           </p>
           <p>
             <scan class="fw-bold">Duration:</scan> ${
-              match.duration + concentration
+              newSpell.duration + concentration
             }
           </p>
           <p class="fw-bold">
-            Components: ${match.components} ${material}
+            Components: ${newSpell.components} ${material}
           </p>
-          <p>${match.desc}</p>
+          <p>${newSpell.desc}</p>
           ${higherLevel}
         </div>
       </div>
       `;
 
-    var matchIndex = matches.indexOf(match);
-    document.querySelector("#option-index-" + matchIndex).remove();
+    document.querySelector("#option-index-" + newSpellIndex).remove();
   }
 }
 
-async function populateFilter(data) {
+function populateFilter() {
+  if (!checkFilterChange()) {
+    return;
+  }
+  resetPreviousFilterValues();
+
   let hasClassFilter = !(classFilter == "default");
   let hasLevelFilter = !(levelFilter == "default");
+  let bothFiltersDefault = !hasClassFilter && !hasLevelFilter;
 
-  for (var a = data.results.length; a <= data.count; a += data.results.length) {
-    // check that a filter is active
-    if (hasClassFilter || hasLevelFilter) {
-      // loop through this page of results
-      for (let i = 0; i < data.results.length; i++) {
-        let result = data.results[i];
+  for (let i = 0; i < completeSpellList.length; i++) {
+    let result = completeSpellList[i];
 
-        if (spells.includes(result.name)) {
-          continue;
+    if (bothFiltersDefault) {
+      filteredSpellList.innerHTML += `<option id="option-index-${i}" value="${result.name}">${result.name}</option>`;
+    } else if (collectedSpells.includes(result.name)) {
+      continue;
+    } else {
+      let resultClassesArray = result.dnd_class.split(", ");
+      if (hasClassFilter) {
+        for (let j = 0; j < resultClassesArray.length; j++) {
+          if (
+            classFilter == resultClassesArray[j] &&
+            (!hasLevelFilter || levelFilter == result.level_int)
+          ) {
+            filteredSpellList.innerHTML += `<option id="option-index-${i}" value="${result.name}">${result.name}</option>`;
+          }
         }
-
-        let resultClassesArray = result.dnd_class.split(", ");
-
-        if (hasClassFilter) {
-          for (let j = 0; j < resultClassesArray.length; j++) {
-            if (
-              classFilter == resultClassesArray[j] &&
-              (!hasLevelFilter || levelFilter == result.level_int)
-            ) {
-              matches.push(result);
-              let newMatchIndex = matches.length - 1;
-              filteredSpellList.innerHTML += `<option id="option-index-${newMatchIndex}" value="${result.name}">${result.name}</option>`;
-            }
-          }
-        } else {
-          if (levelFilter == result.level_int) {
-            matches.push(result);
-            let newMatchIndex = matches.length - 1;
-            filteredSpellList.innerHTML += `<option id="option-index-${newMatchIndex}" value="${result.name}">${result.name}</option>`;
-          }
+      } else if (hasLevelFilter) {
+        if (levelFilter == result.level_int) {
+          filteredSpellList.innerHTML += `<option id="option-index-${i}" value="${result.name}">${result.name}</option>`;
         }
       }
-    }
-    if (a != data.count) {
-      data = await fetch(data.next).then((response) => response.json());
     }
   }
 }
 
 // request url: https://api.open5e.com/spells/
-async function requestAPI(filtersChanged) {
-  // data-intensive; do not run unless the filters have been altered
-  if (filtersChanged) {
-    matches = [];
-    resetPreviousFilterValues();
-    const data = await fetch("https://api.open5e.com/spells/").then(
-      (response) => response.json()
-    );
-    populateFilter(data);
+async function requestAPI() {
+  const data = await fetch("https://api.open5e.com/spells/").then(
+    (response) => response.json()
+  );
+  return data;
+}
+
+async function collectAllSpellsFromAPI() {
+  let data = await requestAPI();
+
+  for (var a = data.results.length; a <= data.count; a += data.results.length) {
+    data.results.forEach((result) => completeSpellList.push(result));
+
+    if (a != data.count) {
+      data = await fetch(data.next).then((response) => response.json());
+    }
   }
 }
