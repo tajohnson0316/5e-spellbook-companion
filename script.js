@@ -19,6 +19,8 @@ let filteredSpellList = document.querySelector("#spell-list");
 let spellbook = document.querySelector("#spellbook");
 let collectedSpells = [];
 
+let spellRemoved = false;
+
 function getClassFilter(element) {
   classFilter = element.value;
 }
@@ -43,6 +45,14 @@ function resetPreviousFilterValues() {
 function checkFilterChange() {
   return (
     previousClassFilter != classFilter || previousLevelFilter != levelFilter
+  );
+}
+
+function clearList() {
+  filteredSpellList.innerHTML = (`
+    <option selected value="default">
+      Spell List
+    </option>`
   );
 }
 
@@ -72,14 +82,18 @@ function addCardToSpellbook(spellbookElement) {
 
     let higherLevel = "";
     if (newSpell.higher_level.length > 0) {
-      higherLevel = `<p>
-                <scan class="fw-bold">At higher levels:</scan> ${newSpell.higher_level}
-              </p>`;
+      higherLevel = `
+        <p>
+          <scan class="fw-bold">At higher levels:</scan> ${newSpell.higher_level}
+        </p>`;
     }
 
     spellbook.innerHTML += `
-      <div class="card">
-        <div class="card-header d-flex justify-content-between fs-6">
+      <div 
+        class="card flex-fill" 
+        id="${newSpell.slug}" 
+        value="${newSpell.name}">
+        <div class="card-header d-flex justify-content-between fs-6 position-relative">
           <a
             href="https://open5e.com/spells/${newSpell.slug}"
             target="_blank"
@@ -87,7 +101,16 @@ function addCardToSpellbook(spellbookElement) {
             class="text-danger"
             >${newSpell.name}</a
           >
-          <span>${newSpell.level} ${newSpell.school} | ${newSpell.dnd_class}</span>
+          <span>
+            ${newSpell.level} ${newSpell.school} | ${newSpell.dnd_class}
+          </span>
+          <button 
+            type="button" 
+            class="btn btn-outline-secondary btn-md btn-exit position-absolute top-0 start-100 translate-middle"
+            onclick="removeSpell('#${newSpell.slug}')"
+          >
+          <i class="bi bi-x-circle text-danger"></i>
+          </button>
         </div>
         <div class="card-body">
           <p><scan class="fw-bold">Range:</scan> ${newSpell.range}</p>
@@ -114,11 +137,23 @@ function addCardToSpellbook(spellbookElement) {
   }
 }
 
+function removeSpell(elementID) {
+  let spellName = document.querySelector(elementID).value;
+  let spellIndex = collectedSpells.indexOf(spellName);
+
+  collectedSpells.splice(spellIndex, 1);
+  document.querySelector(elementID).remove();
+  spellRemoved = true;
+}
+
 function populateFilter() {
-  if (!checkFilterChange()) {
+  if (!checkFilterChange() && !spellRemoved) {
     return;
   }
+
   resetPreviousFilterValues();
+  clearList();
+  spellRemoved = false;
 
   let hasClassFilter = !(classFilter == "default");
   let hasLevelFilter = !(levelFilter == "default");

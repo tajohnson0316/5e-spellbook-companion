@@ -13,6 +13,11 @@
     />
   </head>
   <body>
+    <nav class="navbar navbar-expand-lg bg-info-subtle">
+      <div class="container-fluid">
+        <div class="navbar-brand">The 5e Spellbook Companion</div>
+      </div>
+    </nav>
     <!-- main starts -->
     <main class="d-flex align-items-start justify-content-center p-3 gap-3">
       <!-- find spells card start -->
@@ -26,7 +31,7 @@
             id="class-filter"
             class="form-select mb-2 select-width"
             onfocus="this.oldValue = this.value;"
-            onchange="onClassFilterChange(this); this.oldValue = this.value; getClassFilter(this); resetFilteredList('#spell-list')"
+            onchange="onClassFilterChange(this); this.oldValue = this.value; getClassFilter(this)"
           >
             <option selected value="default">Class</option>
             <option value="Bard">Bard</option>
@@ -43,7 +48,7 @@
             id="level-filter"
             class="form-select mb-5 select-width"
             onfocus="this.oldValue = this.value;"
-            onchange="onLevelFilterChange(this); this.oldValue = this.value; getLevelFilter(this); resetFilteredList()"
+            onchange="onLevelFilterChange(this); this.oldValue = this.value; getLevelFilter(this)"
           >
             <option selected value="default">Spell Level</option>
             <option value="0">Cantrip</option>
@@ -63,7 +68,7 @@
             name="spell-list"
             id="spell-list"
             class="form-select mb-5"
-            onclick="populateFilter();"
+            onclick="populateFilter()"
             onchange="addCardToSpellbook(this)"
           >
             <option selected value="default">Spell List</option>
@@ -86,22 +91,26 @@
               >
                 <i class="bi bi-search"></i>
               </button>
-              <ul class="dropdown-menu dropdown-menu-end">
-                
-              </ul>
+              <ul class="dropdown-menu dropdown-menu-end"></ul>
             </div>
           </form>
         </div>
       </div>
       <!-- spellbook start -->
       <div class="card col-lg-6">
-        <div class="card-header fs-3 text-center">Spellbook</div>
+        <div class="card-header fs-3 text-center mb-3">Spellbook</div>
         <div
           id="spellbook"
-          class="card-body d-flex flex-wrap justify-content-between align-items-start gap-3"
+          class="card-body d-flex flex-wrap justify-content-between gap-2"
         ></div>
       </div>
     </main>
+    <footer class="footer bg-info-subtle">
+      Powered by the
+      <a href="https://open5e.com/" target="_blank" rel="noopener noreferrer"
+        >Open5e API</a
+      >
+    </footer>
     <script src="./js/bootstrap.js"></script>
     <script src="script.js"></script>
   </body>
