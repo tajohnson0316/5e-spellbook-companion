@@ -7,6 +7,10 @@
     <title>5e Spellbook Companion</title>
     <link rel="stylesheet" href="./css/bootstrap.css" />
     <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css"
+    />
   </head>
   <body>
     <!-- main starts -->
@@ -65,15 +69,28 @@
             <option selected value="default">Spell List</option>
           </select>
           <!-- search input start -->
-          <div class="input-group mb-2">
-            <input
-              class="form-control"
-              type="text"
-              name="spell-search"
-              id="spell-search"
-              placeholder="Where did I put that scroll...?"
-            />
-          </div>
+          <form>
+            <div class="input-group mb-2">
+              <input
+                class="form-control"
+                type="text"
+                name="spell-search"
+                id="spell-search"
+                placeholder="Where did I put that scroll...?"
+              />
+              <button
+                class="btn btn-outline-secondary dropdown-toggle"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                type="button"
+              >
+                <i class="bi bi-search"></i>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end">
+                
+              </ul>
+            </div>
+          </form>
         </div>
       </div>
       <!-- spellbook start -->
